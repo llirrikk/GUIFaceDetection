@@ -34,7 +34,7 @@ def about():
 message = StringVar()
 
 Label(text="Введите путь к изображению", width=50, height=3).pack()
-Entry(textvariable=message, width=40).pack()
+Entry(textvariable=message, width=60).pack()
 Button(text="Обнаружить", width=20, command=about).pack()
 
 root.mainloop()
