@@ -8,11 +8,11 @@ from random import choice, randint
 root = Tk()
 root.title("Главное окно")
 
+cascPath = "haarcascade.xml"
 
 def check():
     answer = mb.askyesno(title="Вопрос", message="Обрезать лица?")
     if answer == True:
-        cascPath = "haarcascade.xml"
 
         faceCascade = cv2.CascadeClassifier(cascPath)
 
@@ -34,8 +34,6 @@ def check():
 
 
 def about():
-    cascPath = "haarcascade.xml"
-
     faceCascade = cv2.CascadeClassifier(cascPath)
 
     image = cv2.imread(message.get())
