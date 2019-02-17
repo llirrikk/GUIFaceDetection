@@ -9,12 +9,11 @@ root = Tk()
 root.title("Главное окно")
 
 cascPath = "haarcascade.xml"
+faceCascade = cv2.CascadeClassifier(cascPath)
 
 def check():
     answer = mb.askyesno(title="Вопрос", message="Обрезать лица?")
     if answer == True:
-
-        faceCascade = cv2.CascadeClassifier(cascPath)
 
         image = cv2.imread(message.get())
         filename = path.splitext(message.get())[0]
@@ -30,11 +29,11 @@ def check():
             cv2.imwrite(str(i) + ".jpg", sub_img)
             chdir("../")
             int(i)
+        exit()
     else: exit()
 
 
 def about():
-    faceCascade = cv2.CascadeClassifier(cascPath)
 
     image = cv2.imread(message.get())
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
