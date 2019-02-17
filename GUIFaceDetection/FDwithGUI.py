@@ -6,7 +6,7 @@ from os import chdir, mkdir, path
 from random import choice, randint
 
 root = Tk()
-root.title("Главное окно")
+root.title("Обнаружение лиц на изображении")
 
 cascPath = "haarcascade.xml"
 faceCascade = cv2.CascadeClassifier(cascPath)
@@ -42,22 +42,17 @@ def about():
 
     for (x, y, w, h) in faces:
         sub_img = image[y: y + h, x: x + w]
-        cv2.circle(
-        img=image,
-        center=(x + 30, y + 30),
-        radius=40,
-        color=(0, 225, 0),
-        thickness=2)
+        cv2.rectangle(image, (x, y), (x+w, y+h), (0, 255, 0), 2)
 
     cv2.imshow("Found {0} faces".format(len(faces)), image)
     cv2.waitKey(0)
     check()
 
-
 message = StringVar()
 
-Label(text="Введите путь к изображению", width=50, height=3).pack()
-Entry(textvariable=message, width=60).pack()
-Button(text="Обнаружить", width=20, command=about).pack()
+Label(text="Введите путь к изображению", width=50, height=3, font=("Helvetica", 16)).grid(columnspan=2)
+Entry(textvariable=message, width=60).grid(row=1, column=0)
+Button(text="Обнаружить", width=20, command=about).grid(row=1, column=1)
+root.resizable(False, False)
 
 root.mainloop()
