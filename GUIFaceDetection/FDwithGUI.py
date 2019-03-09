@@ -43,9 +43,12 @@ def about():
     cv2.waitKey(0)
     check(pathtoimg, image, faces)
 
+def exit():
+	raise SystemExit()
 
-Label(text="Выберете изображение", width=50, height=3, font=("Helvetica", 16)).grid(columnspan=2)
-Button(text="Обнаружить", width=20, command=about).grid(row=1, column=1)
+Label(text="Выбрать изображение", width=30, height=2, font=("Helvetica", 16)).grid(columnspan=2)
+Button(text="Обнаружить", width=30, command=about).grid(row=1, column=1)
+Button(text="Закрыть", width=10, command=exit).grid(row=1, column=0)
 root.resizable(False, False)
 
 root.mainloop()
