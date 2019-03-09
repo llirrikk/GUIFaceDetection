@@ -36,7 +36,7 @@ def about():
     if extension != ".jpg" and extension != ".png" and extension != "jpeg":
     	mb.showerror("Ошибка", "Должно быть выбрано изображение")
     else:	
-        image = cv2.imread(pathtoimg)
+        image = cv2.imread(pathtoimg) 
         gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
         faces = faceCascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
 
@@ -45,6 +45,7 @@ def about():
 
         cv2.imshow("Found {0} faces".format(len(faces)), image)
         cv2.waitKey(0)
+        image = cv2.imread(pathtoimg) #убрать квадраты
         check(pathtoimg, image, faces)
 
 def exit():
