@@ -2,9 +2,7 @@ from tkinter import *
 from tkinter import messagebox as mb
 from tkinter import filedialog as fd
 import cv2
-import sys
 from os import chdir, mkdir, path
-from random import choice, randint
 
 root = Tk()
 root.title("Обнаружение лиц на изображении")
@@ -40,7 +38,6 @@ def about():
 
 
     for (x, y, w, h) in faces:
-        sub_img = image[y: y + h, x: x + w]
         cv2.rectangle(image, (x, y), (x+w, y+h), (0, 255, 0), 2)
 
     cv2.imshow("Found {0} faces".format(len(faces)), image)
