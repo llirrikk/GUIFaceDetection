@@ -25,26 +25,51 @@ def check(pathtoimg, image, faces):
             cv2.imwrite(str(i) + ".jpg", sub_img)
             chdir("../")
             int(i)
+
         exit()
     else:
+
         exit()
 
 
 def about():
-    pathtoimg = fd.askopenfilename()
-    image = cv2.imread(pathtoimg)
-    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    faces = faceCascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
+    pathtoimg = fd.askopenfilenames()
 
-    for (x, y, w, h) in faces:
-        cv2.rectangle(image, (x, y), (x + w, y + h), (0, 255, 0), 2)
+    count = 0
+    for i in str(pathtoimg):
+        if i == ":":
+            count += 1
 
-    cv2.imshow("Found {0} faces".format(len(faces)), image)
-    cv2.waitKey(0)
-    check(pathtoimg, image, faces)
+    if count > 1:
+        replace = str(pathtoimg).replace("'", "").replace("(", "").replace(")", "").replace(", ", "@")
+        splitpath = str(replace).split("@")
+
+        for count in splitpath:
+            print("count: ", count)
+            pathtoimg = count
+
+            extension = pathtoimg[-4:].lower()
+
+            if extension != ".jpg" and extension != ".png" and extension != "jpeg":
+                mb.showerror("Ошибка", "Должно быть выбрано изображение")
+            else:
+                image = cv2.imread(pathtoimg)
+                gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+                faces = faceCascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
+
+                for (x, y, w, h) in faces:
+                    cv2.rectangle(image, (x, y), (x + w, y + h), (0, 255, 0), 2)
+
+                cv2.imshow("Found {0} faces".format(len(faces)), image)
+                cv2.waitKey(0)
+                image = cv2.imread(pathtoimg)  # убрать квадраты
+
+            check(pathtoimg, image, faces)
+
 
 def exit():
-	raise SystemExit()
+    raise SystemExit()
+
 
 Label(text="Выбрать изображение", width=30, height=2, font=("Helvetica", 16)).grid(columnspan=2)
 Button(text="Обнаружить", width=30, command=about).grid(row=1, column=1)
