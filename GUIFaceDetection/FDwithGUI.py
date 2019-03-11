@@ -57,8 +57,9 @@ def button_fullpath():
                     cv2.imwrite(str(i) + ".jpg", sub_img)
                     chdir("../")
                     int(i)
-
-
+#   else:
+#   if count == 1:
+#	FDwithGUI()
 
 def exit():
     raise SystemExit()
