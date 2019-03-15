@@ -3,6 +3,8 @@ from tkinter import messagebox as mb
 from tkinter import filedialog as fd
 import cv2
 from os import chdir, mkdir, path
+from PIL import Image
+from PIL import ImageTk
 
 root = Tk()
 root.title("Обнаружение лиц на изображении")
@@ -11,61 +13,59 @@ cascPath = "haarcascade.xml"
 faceCascade = cv2.CascadeClassifier(cascPath)
 
 
-def button_fullpath():
-    fullpathtoimg = fd.askopenfilenames()
+def check(pathtoimg, image, faces):
+    answer = mb.askyesno(title="Вопрос", message="Обрезать лица?")
+    if answer == True:
+
+        filename = path.splitext(pathtoimg)[0]
+        mkdir(filename + "_output")
+        i = 0
+        for (x, y, w, h) in faces:
+            sub_img = image[y: y + h, x: x + w]
+            i = i + 1
+            chdir(filename + "_output")
+            cv2.imwrite(str(i) + ".jpg", sub_img)
+            chdir("../")
+            int(i)
+        exit()
+    else:
+        exit()
 
 
-    count = 0
-    for i in str(fullpathtoimg):
-        if i == ":":
-            count += 1
+def about():
+    pathtoimg = fd.askopenfilename()
+    extension = pathtoimg[-4:]
+    if extension != ".jpg" and extension != ".png" and extension != "jpeg":
+        mb.showerror("Ошибка", "Должно быть выбрано изображение")
+    else:
+        image = cv2.imread(pathtoimg)
+        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        faces = faceCascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
 
-    if count > 1:
-        replace = str(fullpathtoimg).replace("'", "").replace("(", "").replace(")", "").replace(", ", "@")
-        splitpath = str(replace).split("@")
+        for (x, y, w, h) in faces:
+            cv2.rectangle(image, (x, y), (x + w, y + h), (0, 255, 0), 2)
 
-        for count in splitpath:
-            print("count: ", count)
-            pathtoimg = count
+        root2 = Toplevel()
 
-            extension = pathtoimg[-4:].lower()
+        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+        image = Image.fromarray(image)
+        image = ImageTk.PhotoImage(image)
 
-            if extension != ".jpg" and extension != ".png" and extension != "jpeg":
-                mb.showerror("Ошибка", "Должно быть выбрано изображение")
-            else:
-                image = cv2.imread(pathtoimg)
-                gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-                faces = faceCascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
+        a = Label(root2, image=image, width=500, height=500).pack(side=TOP)
+        b = Button(root2, text="я русский").pack(side=BOTTOM)
 
-                for (x, y, w, h) in faces:
-                    cv2.rectangle(image, (x, y), (x + w, y + h), (0, 255, 0), 2)
+        root2.mainloop()
 
-                cv2.imshow("Found {0} faces".format(len(faces)), image)
-                cv2.waitKey(0)
-                image = cv2.imread(pathtoimg)  # убрать квадраты
+        image = cv2.imread(pathtoimg)  # убрать квадраты
+        check(pathtoimg, image, faces)
 
-            answer = mb.askyesno(title="Вопрос", message="Обрезать лица?")
-            if answer == True:
-
-                filename = path.splitext(pathtoimg)[0]
-                mkdir(filename + "_output")
-                i = 0
-                for (x, y, w, h) in faces:
-                    sub_img = image[y: y + h, x: x + w]
-                    i = i + 1
-                    chdir(filename + "_output")
-                    cv2.imwrite(str(i) + ".jpg", sub_img)
-                    chdir("../")
-                    int(i)
-#   else:
-#   if count == 1:
-#	FDwithGUI()
 
 def exit():
     raise SystemExit()
 
+
 Label(text="Выбрать изображение", width=30, height=2, font=("Helvetica", 16)).grid(columnspan=2)
-Button(text="Обнаружить", width=30, command=button_fullpath).grid(row=1, column=1)
+Button(text="Обнаружить", width=30, command=about).grid(row=1, column=1)
 Button(text="Закрыть", width=10, command=exit).grid(row=1, column=0)
 root.resizable(False, False)
 
