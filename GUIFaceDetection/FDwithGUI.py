@@ -3,8 +3,7 @@ from tkinter import messagebox as mb
 from tkinter import filedialog as fd
 import cv2
 from os import chdir, mkdir, path
-from PIL import Image
-from PIL import ImageTk
+from PIL import Image, ImageTk
 
 root = Tk()
 root.title("Обнаружение лиц на изображении")
@@ -36,58 +35,63 @@ def end(root2):
 def button_fullpath():
     fullpathtoimg = fd.askopenfilenames()
 
-
     count = 0
     for i in str(fullpathtoimg):
         if i == "'":
             count += 1
     count = int(count / 2)
-#    print(fullpathtoimg)
-#    print(count)
+    print(fullpathtoimg)
+    print(count)
 
     if count > 1:
-        replace = str(fullpathtoimg).replace("'", "").replace("(", "").replace(")", "").replace(", ", "@")
-        splitpath = str(replace).split("@")
-        for count in splitpath:
-            print("count: ", count)
-            pathtoimg = count
+        replace = str(fullpathtoimg)\
+            .replace("('", "")\
+            .replace("', '", "@")\
+            .replace("')", "")\
 
-            extension = pathtoimg[-4:].lower()
+    elif count == 1:
+        replace = str(fullpathtoimg)\
+            .replace("('", "")\
+            .replace("',)", "")
 
-            if extension != ".jpg" and extension != ".png" and extension != "jpeg":
-                mb.showerror("Ошибка", "Должно быть выбрано изображение")
-            else:
-                image = cv2.imread(pathtoimg)
-                gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-                faces = faceCascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
+    splitpath = str(replace).split("@")
+    for count in splitpath:
+        print("image: ", count)
+        pathtoimg = count
 
-                for (x, y, w, h) in faces:
-                    cv2.rectangle(image, (x, y), (x + w, y + h), (0, 255, 0), 2)
+        extension = pathtoimg[-4:].lower()
 
-                root2 = Toplevel(root)
+        if extension != ".jpg" and extension != ".png" and extension != "jpeg":
+            mb.showerror("Ошибка", "Должно быть выбрано изображение")
+        else:
+            image = cv2.imread(pathtoimg)
+            gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+            faces = faceCascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
+
+            for (x, y, w, h) in faces:
+                cv2.rectangle(image, (x, y), (x + w, y + h), (0, 255, 0), 2)
+
+            root2 = Toplevel(root)
 
 
-                image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-                image = Image.fromarray(image)
-                image = ImageTk.PhotoImage(image)
+            image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+            image = Image.fromarray(image)
+            image = ImageTk.PhotoImage(image)
 
-                Label(root2, image=image, width=1200, height=700).pack(side=TOP)
-                Button(root2, text="Сохранить лица", width=50, height=100, font=("Times", "15"), command=lambda: check(pathtoimg, image, faces)).pack(side=BOTTOM)
+            Label(root2, image=image, width=1200, height=700).pack(side=TOP)
+            Button(root2, text="Сохранить лица", width=50, height=100, font=("Times", "15"), command=lambda: check(pathtoimg, image, faces)).pack(side=BOTTOM)
 #                Button(root2, text="Следубщая", command=lambda: next())
-                root2.protocol('WM_DELETE_WINDOW',lambda: end(root2))
+            root2.protocol('WM_DELETE_WINDOW',lambda: end(root2))
 
-                root2.flag = True
-                while root2.flag:
-                    root2.update()
-
-
-
-
+            root2.flag = True
+            while root2.flag:
+                root2.update()
+#    elif count == 1:
+#        button_fullpath()
 
 
-#   else:
-#   if count == 1:
-#	FDwithGUI()
+
+
 
 def exit():
     raise SystemExit()
